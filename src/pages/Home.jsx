@@ -6,25 +6,36 @@ export const Home = () => {
 
 	const { store, dispatch } = useGlobalReducer()
 
-	function character() {
-		fetch("https://www.swapi.tech/api/people/")
-			.then(res => res.json())
-			.then(data => console.log(data.results))
-			.catch(err => console.error(err))
+	async function character() {
+
+		const response = await fetch("https://www.swapi.tech/api/people/")
+
+		const data = await response.json()
+		const personajesBasicos = data.results;
+		dispatch({
+			type: "get_personajes",
+			payload: { personaje: personajesBasicos }
+		})
+
+
 	}
 
 
 
-	useEffect(()=>{
+	useEffect(() => {
 		character()
-	},[])
+	}, [])
 
 	return (
 		<div className="text-center mt-5">
-			<h1>Hello Starwars!</h1>
-			
+			<h1>Starwars!</h1>
+			{store.character.map((value, index) => {
+				return (
+					<CardPeople key={index} people={value} />
+				)
+			})}
 
-			<CardPeople/>
+
 
 		</div>
 	);
